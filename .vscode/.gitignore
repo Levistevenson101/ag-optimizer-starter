@@ -1,0 +1,17 @@
+# Ignore Python cache and venv
+__pycache__/
+*.pyc
+*.pyo
+venv/
+
+# Ignore IDE files
+.vscode/
+.idea/
+
+# Ignore data and models
+data_work/
+outputs/
+models/
+
+# Ignore system files
+.DS_Store
