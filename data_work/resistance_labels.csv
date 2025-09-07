@@ -1,0 +1,4 @@
+county_fips,year,weed,soa_group,label_present
+29205,2022,waterhemp,ALS,0
+29205,2023,waterhemp,ALS,1
+29205,2024,waterhemp,ALS,1

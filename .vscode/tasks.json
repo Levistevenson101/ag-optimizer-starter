@@ -1,0 +1,61 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Fetch CDL (Shelby County next 3 yrs)",
+      "type": "shell",
+      "command": "${workspaceFolder}/venv/bin/python src/data/fetch_cdl_cropshares.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "Train risk model",
+      "type": "shell",
+      "command": "${workspaceFolder}/venv/bin/python src/ml/train_risk.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "Score program risk",
+      "type": "shell",
+      "command": "${workspaceFolder}/venv/bin/python src/ml/score_program_risk.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "Optimize rotation",
+      "type": "shell",
+      "command": "${workspaceFolder}/venv/bin/python src/or/optimize_rotation.py",
+      "problemMatcher": []
+    },
+
+    {
+      "label": "Pipeline: Fetch → Train → Score → Optimize",
+      "dependsOn": [
+        "Fetch CDL (Shelby County next 3 yrs)",
+        "Train risk model",
+        "Score program risk",
+        "Optimize rotation"
+      ],
+      "dependsOrder": "sequence"
+    },
+
+    {
+      "label": "Run Streamlit (foreground)",
+      "type": "shell",
+      "command": "${workspaceFolder}/venv/bin/python -m streamlit run src/app/app.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Streamlit (background)",
+      "type": "shell",
+      "command": "nohup ${workspaceFolder}/venv/bin/python -m streamlit run src/app/app.py --server.headless true --server.port 8501 > ${workspaceFolder}/streamlit.log 2>&1 &",
+      "problemMatcher": []
+    },
+    {
+      "label": "Stop Streamlit",
+      "type": "shell",
+      "command": "pkill -f \"streamlit run src/app/app.py\" || true",
+      "problemMatcher": []
+    }
+  ]
+}
+
+

@@ -1,0 +1,7 @@
+county_fips,year,crop_share_corn,crop_share_soy,crop_diversity_index,usgs_kgai_total,usgs_kgai_glyphos,usgs_kgai_glufos,gdd_apr_sep,precip_apr_sep,extreme_heat_days,soil_om_mean,soil_texture_class,soil_ph_mean,weed_occurrence_prior
+29205,2022,0.0,0.0,1.789956,,,,,,,,silt_loam,,1
+29205,2023,0.0,0.0,1.836368,,,,,,,,silt_loam,,1
+29205,2024,0.0,0.0,1.654666,,,,,,,,silt_loam,,1
+29205,2025,0.0,0.0,1.76033,,,,,,,,silt_loam,,1
+29205,2026,0.0,0.0,1.76033,,,,,,,,silt_loam,,1
+29205,2027,0.0,0.0,1.76033,,,,,,,,silt_loam,,1

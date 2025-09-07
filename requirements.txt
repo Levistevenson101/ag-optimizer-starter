@@ -1,0 +1,12 @@
+numpy
+pandas
+polars
+scikit-learn
+xgboost==2.0.3
+pyarrow
+duckdb
+matplotlib
+plotly
+streamlit
+pyomo
+pulp

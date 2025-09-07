@@ -1,0 +1,7 @@
+#!/Users/levistevenson/Downloads/ag-optimizer-starter/venv/bin/python
+import sys
+from pyomo.scripting.pyomo_main import main_console_script
+if __name__ == '__main__':
+    if sys.argv[0].endswith('.exe'):
+        sys.argv[0] = sys.argv[0][:-4]
+    sys.exit(main_console_script())

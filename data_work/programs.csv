@@ -1,0 +1,14 @@
+program_id,label,soas,includes_cultivation,cost_per_acre,expected_yield_penalty_if_fail,name
+P1,ALS_pre,ALS,0.0,20.0,0.25,
+P2,PPO_pre,PPO,0.0,24.0,0.2,
+P3,HPPD_post,HPPD,0.0,26.0,0.22,
+P4,Glufosinate_post,GLUFO,0.0,28.0,0.18,
+P5,Mix_ALS_PPO,ALS|PPO,0.0,36.0,0.14,
+P6,PPO_Cultivation,PPO,1.0,30.0,0.12,
+P7,HPPD_CoverCrop,HPPD,1.0,33.0,0.13,
+P_DUAL15,,GROUP15,,25.0,,Dual Magnum (s-metolachlor)
+P_FLEX,,GROUP14,,30.0,,Flexstar (fomesafen)
+P_CALLISTO,,GROUP27,,28.0,,Callisto (mesotrione)
+P_GLYPHO,,GROUP9,,12.0,,Roundup (glyphosate)
+P_GLUFI,,GROUP10,,18.0,,Liberty (glufosinate)
+P_AUX,,GROUP4,,35.0,,Enlist/Dicamba (auxin)
