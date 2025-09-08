@@ -1,5 +1,4 @@
-import pandas as pd
-import pyomo.environ as pyo
+# src/or/optimize_rotation.py
 import datetime
 import pandas as pd
 import pyomo.environ as pyo
@@ -21,18 +20,22 @@ years = future_years[:3] if len(future_years) >= 3 else years_all[-3:]
 # Filter the table down to those three years
 risk = risk[risk["year"].isin(years)].copy()
 county = risk["county_fips"].unique()[0]
-df = risk[risk["county_fips"]==county].copy()
+df = risk[risk["county_fips"] == county].copy()
 
 Tvals = sorted(df["year"].unique())[:3]
 M = sorted(df["program_id"].unique())
 
+# Simple economics placeholders (you can tune these)
 base_yield = 60.0
-price      = 12.0
-lam        = 20.0
-budget_t   = {Tvals[0]: 40.0, Tvals[1]: 40.0, Tvals[2]: 40.0}
+price = 12.0
+lam = 20.0
+# budget per year ($/ac); change as you like
+budget_t = {t: 40.0 for t in Tvals}
 
+# map program_id -> SOA string (e.g., "9+15")
 soas = programs["soas"].to_dict()
 
+# ----------------- Pyomo model -----------------
 m = pyo.ConcreteModel()
 m.T = pyo.Set(initialize=range(len(Tvals)))
 m.M = pyo.Set(initialize=M)
@@ -40,43 +43,59 @@ m.x = pyo.Var(m.T, m.M, within=pyo.Binary)
 
 def R(t, prog):
     year = Tvals[t]
-    return float(df[(df["year"]==year) & (df["program_id"]==prog)]["R_t_m"].iloc[0])
+    return float(df[(df["year"] == year) & (df["program_id"] == prog)]["R_t_m"].iloc[0])
+
 def C(prog):
     return float(programs.loc[prog, "cost_per_acre"])
 
 def obj_rule(m):
-    profit = sum( (base_yield*price - C(p)) * m.x[t,p] for t in m.T for p in m.M )
-    risk   = sum( lam * R(t,p) * m.x[t,p] for t in m.T for p in m.M )
-    return profit - risk
+    profit = sum((base_yield * price - C(p)) * m.x[t, p] for t in m.T for p in m.M)
+    risk_pen = sum(lam * R(t, p) * m.x[t, p] for t in m.T for p in m.M)
+    return profit - risk_pen
+
 m.obj = pyo.Objective(rule=obj_rule, sense=pyo.maximize)
 
+# exactly one program per year
 def one_per_year(m, t):
-    return sum(m.x[t,p] for p in m.M) == 1
+    return sum(m.x[t, p] for p in m.M) == 1
 m.one_program = pyo.Constraint(m.T, rule=one_per_year)
 
+# annual budgets
 def budget_rule(m, t):
-    return sum(C(p) * m.x[t,p] for p in m.M) <= budget_t[Tvals[t]]
+    return sum(C(p) * m.x[t, p] for p in m.M) <= budget_t[Tvals[t]]
 m.budget = pyo.Constraint(m.T, rule=budget_rule)
 
-for t in range(len(Tvals)-1):
+# -------- No-repeat SOA in adjacent years (works with m/Tvals/soas) --------
+for t in range(len(Tvals) - 1):
     for p in M:
         for q in M:
-            if soas[p] == soas[q]:
-                setattr(m, f"norepeat_{t}_{p}_{q}",
-                        pyo.Constraint(expr= m.x[t,p] + m.x[t+1,q] <= 1))
+            if soas.get(p, "") == soas.get(q, "") and soas.get(p, "") != "":
+                # If same SOA, you can't pick p in year t and q in year t+1 simultaneously
+                setattr(
+                    m,
+                    f"norepeat_{t}_{p}_{q}",
+                    pyo.Constraint(expr=m.x[t, p] + m.x[t + 1, q] <= 1),
+                )
 
+# ----------------- Solve -----------------
 solver = pyo.SolverFactory("glpk")
 res = solver.solve(m, tee=False)
 
+# ----------------- Extract solution -----------------
 schedule = []
 for t in m.T:
-    chosen = [p for p in m.M if pyo.value(m.x[t,p]) > 0.5][0]
-    schedule.append({
-        "year": Tvals[t],
-        "program_id": chosen,
-        "soas": soas[chosen]
-    })
+    chosen = [p for p in m.M if pyo.value(m.x[t, p]) > 0.5]
+    if not chosen:
+        continue
+    chosen = chosen[0]
+    schedule.append(
+        {
+            "year": Tvals[t],
+            "program_id": chosen,
+            "soas": soas.get(chosen, ""),
+        }
+    )
 
-out = pd.DataFrame(schedule)
+out = pd.DataFrame(schedule).sort_values("year").reset_index(drop=True)
 out.to_csv("outputs/rotation_schedule.csv", index=False)
 print("Optimal schedule:\n", out)

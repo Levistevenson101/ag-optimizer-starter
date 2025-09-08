@@ -1,14 +1,13 @@
-program_id,label,soas,includes_cultivation,cost_per_acre,expected_yield_penalty_if_fail,name
-P1,ALS_pre,ALS,0.0,20.0,0.25,
-P2,PPO_pre,PPO,0.0,24.0,0.2,
-P3,HPPD_post,HPPD,0.0,26.0,0.22,
-P4,Glufosinate_post,GLUFO,0.0,28.0,0.18,
-P5,Mix_ALS_PPO,ALS|PPO,0.0,36.0,0.14,
-P6,PPO_Cultivation,PPO,1.0,30.0,0.12,
-P7,HPPD_CoverCrop,HPPD,1.0,33.0,0.13,
-P_DUAL15,,GROUP15,,25.0,,Dual Magnum (s-metolachlor)
-P_FLEX,,GROUP14,,30.0,,Flexstar (fomesafen)
-P_CALLISTO,,GROUP27,,28.0,,Callisto (mesotrione)
-P_GLYPHO,,GROUP9,,12.0,,Roundup (glyphosate)
-P_GLUFI,,GROUP10,,18.0,,Liberty (glufosinate)
-P_AUX,,GROUP4,,35.0,,Enlist/Dicamba (auxin)
+program_id,name,soas,cost_per_acre
+P1,"Roundup PowerMAX + Zidua","9+15",28
+P2,"Liberty (glufosinate) + Dual II Magnum","10+15",32
+P3,"Dicamba (XtendiMax/Engenia) + Warrant","4+15",30
+P4,"Enlist One (2,4-D) + Zidua","4+15",31
+P5,"HPPD (Callisto/Laudis) + Atrazine + Dual","27+5+15",26
+P6,"PPO (Flexstar/Cobra) + Dual","14+15",25
+P7,"ALS premix (Classic + Pursuit)","2",20
+P8,"Roundup + Dicamba (trait-allowed)","9+4",29
+P9,"Roundup + Liberty (trait-allowed)","9+10",33
+P10,"Zidua + Metribuzin (PRE soy)","15+5",24
+P11,"Anthem Maxx (pyroxasulfone+flumioxazin)","15+14",27
+P12,"Authority MTZ (sulfentrazone+metribuzin)","14+5",26
